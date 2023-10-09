@@ -8,31 +8,33 @@ from costs import compute_loss
 
 
 def compute_stoch_gradient(y, tx, w):
-    """Compute a stochastic gradient at w from just few examples n and their corresponding y_n labels.
+    """Compute a stochastic gradient at w from a data sample batch of size B, where B < N, and their corresponding labels.
 
     Args:
-        y: shape=(N, )
-        tx: shape=(N,2)
-        w: shape=(2, ). The vector of model parameters.
+        y: numpy array of shape=(B, )
+        tx: numpy array of shape=(B,2)
+        w: numpy array of shape=(2, ). The vector of model parameters.
 
     Returns:
-        An array of shape (2, ) (same shape as w), containing the stochastic gradient of the loss at w.
+        A numpy array of shape (2, ) (same shape as w), containing the stochastic gradient of the loss at w.
     """
 
     # ***************************************************
     # INSERT YOUR CODE HERE
     # TODO: implement stochastic gradient computation. It's the same as the usual gradient.
     # ***************************************************
-    raise NotImplementedError
+    e = y - tx @ w
+
+    return -1 * tx.T @ e / e.shape[0]
 
 
 def stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma):
     """The Stochastic Gradient Descent algorithm (SGD).
 
     Args:
-        y: shape=(N, )
-        tx: shape=(N,2)
-        initial_w: shape=(2, ). The initial guess (or the initialization) for the model parameters
+        y: numpy array of shape=(N, )
+        tx: numpy array of shape=(N,2)
+        initial_w: numpy array of shape=(2, ). The initial guess (or the initialization) for the model parameters
         batch_size: a scalar denoting the number of data points in a mini-batch used for computing the stochastic gradient
         max_iters: a scalar denoting the total number of iterations of SGD
         gamma: a scalar denoting the stepsize
@@ -52,7 +54,15 @@ def stochastic_gradient_descent(y, tx, initial_w, batch_size, max_iters, gamma):
         # INSERT YOUR CODE HERE
         # TODO: implement stochastic gradient descent.
         # ***************************************************
-        raise NotImplementedError
+        batch_iter(y, tx, batch_size)
+        grad = compute_stoch_gradient(y, tx, w)
+
+        loss = compute_loss(y, tx, w)
+        w = w - gamma * grad
+
+        # store w and loss
+        ws.append(w)
+        losses.append(loss)
 
         print(
             "SGD iter. {bi}/{ti}: loss={l}, w0={w0}, w1={w1}".format(
