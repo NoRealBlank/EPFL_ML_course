@@ -21,4 +21,4 @@ def compute_loss(y, tx, w):
     # ***************************************************
     e = y - tx @ w
 
-    return (e * e).sum(axis=0) / (2 * e.shape[0])
+    return e.T @ e / (2 * e.shape[0])
